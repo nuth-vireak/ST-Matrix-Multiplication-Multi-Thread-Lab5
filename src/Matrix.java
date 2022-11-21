@@ -1,6 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Matrix {
+public class Matrix{
 
 
     // ----------------------------------------------------------------------------------
@@ -35,7 +37,7 @@ public class Matrix {
 
         // Display each matrix after creation
         System.out.println("Matrix----------------------");
-        SingleThread.displayEachMatrix(row, column, matrix);
+        MultiThread.displayEachMatrix(row, column, matrix);
         System.out.println("----------------------------");
 
         return matrix;
@@ -47,6 +49,7 @@ public class Matrix {
      * @param matrix2 second matrix
      * @return result of matrix multiplication
      */
+    // creating 10 threads and waiting for them to complete then again repeat steps.
     public static int[][] multiply(int[][] matrix1, int[][] matrix2) {
 
         int row1 = matrix1.length; // Get number of rows from matrix1
@@ -61,7 +64,7 @@ public class Matrix {
                 System.out.println("------------------------------------ERROR-------------------------------------------------------");
                 throw new Exception("Invalid matrix size. Number of columns in matrix 1 must be equal to number of rows in matrix 2.");
             }
-        // Catch exception if matrix multiplication is not possible
+            // Catch exception if matrix multiplication is not possible
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(0);
@@ -69,15 +72,27 @@ public class Matrix {
 
         result = new int[row1][column2]; // Initialize result matrix with row1 and column2 size
 
-        for (int i = 0; i < row1; i++) { // Loop through each row in matrix1
-            for (int j = 0; j < column2; j++) { // Loop through each column in matrix2
-                for (int k = 0; k < column1; k++) { // Loop through each column in matrix1
-                    result[i][j] += matrix1[i][k] * matrix2[k][j]; // Multiply each element in matrix1 with each element in matrix2
-                }
+        // Create 10 threads
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            threads.add(new Thread(new RowMultiply(result, matrix1, matrix2, i)));
+        }
+
+        // Start all threads
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        // Wait for all threads to complete
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        return result; // Return result of matrix multiplication
+        return result;
     }
 
     /**
@@ -98,5 +113,4 @@ public class Matrix {
 
         return matrix;
     }
-
 } // End of Matrix class
