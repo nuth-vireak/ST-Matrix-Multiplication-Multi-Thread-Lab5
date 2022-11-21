@@ -1,4 +1,6 @@
+import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class SingleThread {
 
@@ -118,6 +120,9 @@ public class SingleThread {
                 // Generate matrix
                 case 2 -> {
 
+                    // start timer
+                    Date start = new Date();
+
                     System.out.println();
                     System.out.println("Matrix 01-------------------");
                     System.out.print("Enter number of rows: "); // Prompt user to enter number of rows
@@ -139,6 +144,21 @@ public class SingleThread {
                     matrix2 = Matrix.autoGenerateMatrix(row2, column2); // Call autoGenerateMatrix method to create matrix2
 
                     displayAllMatrix(matrix1, matrix2); // Call displayAllMatrix method to display matrix1 and matrix2
+
+                    Date end = new Date();
+
+                    long timeTaken = end.getTime() - start.getTime();
+
+                    System.out.println();
+                    System.out.println("EXECUTION TIME--------------");
+                    System.out.println(timeTaken + " ms");
+                    System.out.printf("%02d min, %02d sec, %03d ms%n",
+                            TimeUnit.MILLISECONDS.toMinutes(timeTaken),
+                            TimeUnit.MILLISECONDS.toSeconds(timeTaken) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeTaken)),
+                            timeTaken % 1000);
+
+                    System.out.println("----------------------------");
                 }
 
                 // Multiply matrix
